@@ -1,12 +1,20 @@
 ---
 import Base from '../layouts/Base.astro';
 import Hero from '../components/home/Hero.astro';
+import About from '../components/home/About.astro';
+import Stack from '../components/home/Stack.astro';
+import Experience from '../components/home/Experience.astro';
+import Education from '../components/home/Education.astro';
+import Projects from '../components/home/Projects.astro';
 ---
 
 <Base>
   <main>
     <Hero />
-    <!-- temporary: room for the hero to scroll out until About lands -->
-    <div style="height: 150vh"></div>
+    <About />
+    <Stack />
+    <Experience />
+    <Education />
+    <Projects />
   </main>
 </Base>

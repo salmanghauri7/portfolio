@@ -1,4 +1,17 @@
 import type { ImageMetadata } from "astro";
+// PLACEHOLDER images — replace with real 400×500 thumbnails and ~1000×873 screenshots
+import demo1Thumb from '../assets/projects/thumbnail/demo-1.jpg';
+import demo1Img1 from '../assets/projects/images/demo-1-1.png';
+import demo1Img2 from '../assets/projects/images/demo-1-2.png';
+import demo2Thumb from '../assets/projects/thumbnail/demo-2.jpg';
+import demo2Img1 from '../assets/projects/images/demo-2-1.png';
+import demo2Img2 from '../assets/projects/images/demo-2-2.png';
+import demo3Thumb from '../assets/projects/thumbnail/demo-3.jpg';
+import demo3Img1 from '../assets/projects/images/demo-3-1.png';
+import demo3Img2 from '../assets/projects/images/demo-3-2.png';
+import demo4Thumb from '../assets/projects/thumbnail/demo-4.jpg';
+import demo4Img1 from '../assets/projects/images/demo-4-1.png';
+import demo4Img2 from '../assets/projects/images/demo-4-2.png';
 
 export const GENERAL_INFO = {
   name: "Muhammad Salman",
@@ -95,4 +108,54 @@ export interface Project {
   sourceCode?: string;
 }
 
-export const PROJECTS: Project[] = []; // 4–8 entries, list order = display order
+// PLACEHOLDER entries — 4–8 real projects, list order = display order
+export const PROJECTS: Project[] = [
+  {
+    title: "TODO Project One",
+    slug: "demo-1",
+    year: 2025,
+    description: "TODO one paragraph on what the project is.<br/><ul><li>TODO key feature</li><li>TODO key feature</li></ul>",
+    role: "TODO what you owned: frontend, API, infra…",
+    techStack: ["Next.JS", "TypeScript", "PostgreSQL", "Docker"],
+    thumbnail: demo1Thumb,
+    images: [demo1Img1, demo1Img2],
+    liveUrl: "https://example.com",
+    sourceCode: "https://github.com/salmanghauri7",
+  },
+  {
+    title: "TODO Project Two",
+    slug: "demo-2",
+    year: 2024,
+    description: "TODO one paragraph on what the project is.<br/><ul><li>TODO key feature</li><li>TODO key feature</li></ul>",
+    role: "TODO what you owned: frontend, API, infra…",
+    techStack: ["React.JS", "Node.JS", "MongoDB"],
+    thumbnail: demo2Thumb,
+    images: [demo2Img1, demo2Img2],
+    liveUrl: "https://example.com",
+    sourceCode: "https://github.com/salmanghauri7",
+  },
+  {
+    title: "TODO Project Three",
+    slug: "demo-3",
+    year: 2023,
+    description: "TODO one paragraph on what the project is.<br/><ul><li>TODO key feature</li><li>TODO key feature</li></ul>",
+    role: "TODO what you owned: frontend, API, infra…",
+    techStack: ["FastAPI", "React.JS", "PostgreSQL", "AWS"],
+    thumbnail: demo3Thumb,
+    images: [demo3Img1, demo3Img2],
+    liveUrl: "https://example.com",
+    sourceCode: "https://github.com/salmanghauri7",
+  },
+  {
+    title: "TODO Project Four",
+    slug: "demo-4",
+    year: 2022,
+    description: "TODO one paragraph on what the project is.<br/><ul><li>TODO key feature</li><li>TODO key feature</li></ul>",
+    role: "TODO what you owned: frontend, API, infra…",
+    techStack: ["Astro", "TypeScript", "GSAP"],
+    thumbnail: demo4Thumb,
+    images: [demo4Img1, demo4Img2],
+    liveUrl: "https://example.com",
+    sourceCode: "https://github.com/salmanghauri7",
+  },
+];
