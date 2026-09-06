@@ -1,15 +1,258 @@
 ---
+import { getImage } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
+import ChevronArrow from '../../components/ChevronArrow.astro';
 import { PROJECTS } from '../../data/site';
 
 export function getStaticPaths() {
   return PROJECTS.map((project) => ({ params: { slug: project.slug }, props: { project } }));
 }
 const { project } = Astro.props;
+
+const title = `${project.title} - ${project.techStack.slice(0, 3).join(', ')}`;
+const description = project.description.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+const images = await Promise.all(project.images.map((img) => getImage({ src: img, width: 1600, format: 'webp' })));
 ---
 
-<Base title={project.title}>
+<Base title={title} description={description}>
   <main>
-    <section class="container">TODO lane D: {project.title}</section>
+    <section class="project">
+      <div class="container">
+        <a class="back" href="/" data-transition>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path>
+          </svg>
+          Back
+        </a>
+
+        <div id="info">
+          <div class="info-inner">
+            <div class="title-row">
+              <h1 class="fade-in-later"><span>{project.title}</span></h1>
+              {
+                project.sourceCode && (
+                  <a class="icon-link fade-in-later" href={project.sourceCode} target="_blank" rel="noopener" aria-label="Source code">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                      <path d="M9 18c-4.51 2-5-2-7-2" />
+                    </svg>
+                  </a>
+                )
+              }
+              {
+                project.liveUrl && (
+                  <a class="icon-link fade-in-later" href={project.liveUrl} target="_blank" rel="noopener" aria-label="Live site">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    </svg>
+                  </a>
+                )
+              }
+            </div>
+
+            <div class="meta">
+              <div class="meta-block fade-in-later">
+                <p class="meta-label">Year</p>
+                <p class="meta-value">{project.year}</p>
+              </div>
+              <div class="meta-block fade-in-later">
+                <p class="meta-label">Tech &amp; Technique</p>
+                <p class="meta-value">{project.techStack.join(', ')}</p>
+              </div>
+              <div class="meta-block fade-in-later">
+                <p class="meta-label">Description</p>
+                <div class="meta-value" set:html={project.description} />
+              </div>
+              {
+                project.role && (
+                  <div class="meta-block fade-in-later">
+                    <p class="meta-label">My Role</p>
+                    <div class="meta-value" set:html={project.role} />
+                  </div>
+                )
+              }
+            </div>
+
+            <div class="info-chevron"><ChevronArrow /></div>
+          </div>
+        </div>
+
+        <div id="images" class="fade-in-later">
+          {
+            images.map((img, i) => (
+              <div class="shot" role="img" aria-label={`${project.title} screenshot ${i + 1}`} style={`background-image: url(${img.src})`}>
+                <a class="open" href={img.src} target="_blank" rel="noopener" aria-label={`Open ${project.title} screenshot ${i + 1}`}>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M15 3h6v6" /><path d="M10 14 21 3" /><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  </svg>
+                </a>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
   </main>
 </Base>
+
+<style>
+  .project {
+    padding-top: 20px;
+    padding-bottom: 56px;
+  }
+  .back {
+    margin-bottom: 64px;
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    height: 48px;
+    transition: all 0.3s;
+  }
+  .back svg {
+    transition: transform 0.3s;
+  }
+  .back:hover {
+    color: var(--primary);
+  }
+  .back:hover svg {
+    transform: translateX(-4px);
+  }
+
+  #info {
+    min-height: calc(100svh - 100px);
+    display: flex;
+  }
+  .info-inner {
+    position: relative;
+    width: 100%;
+  }
+  .title-row {
+    position: relative;
+    z-index: 1; /* text above the chevron */
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    max-width: 635px;
+    margin: 0 auto 40px;
+  }
+  h1 {
+    font: 400 36px/1 var(--font-anton);
+    overflow: hidden;
+  }
+  h1 span {
+    display: inline-block;
+  }
+  .icon-link {
+    flex-shrink: 0;
+    transition: color 0.3s;
+  }
+  .icon-link:hover {
+    color: var(--primary);
+  }
+  .icon-link svg {
+    width: 30px;
+    height: 30px;
+  }
+  .meta {
+    position: relative;
+    z-index: 1;
+    max-width: 635px;
+    margin-inline: auto;
+    padding-bottom: 80px;
+    display: grid;
+    row-gap: 28px;
+  }
+  .meta-label {
+    font: 400 16px var(--font-anton);
+    color: var(--muted-fg);
+    margin-bottom: 12px;
+  }
+  .meta-value {
+    font-size: 18px;
+  }
+  /* set:html content has no scoped attribute, hence :global */
+  .meta-value :global(ul) {
+    padding-left: 20px;
+    margin: 8px 0 0;
+    list-style: disc;
+  }
+  .info-chevron {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 0;
+  }
+
+  #images {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 800px;
+    margin-inline: auto;
+  }
+  .shot {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 750 / 400;
+    background: var(--bg-light) center 50% / cover no-repeat; /* image comes from the inline style */
+  }
+  .open {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: hsl(0 0% 13% / 0.7);
+    color: var(--fg);
+    opacity: 0;
+    transition: all 0.3s;
+  }
+  .shot:hover .open,
+  .open:focus-visible {
+    opacity: 1;
+  }
+  .open:hover {
+    background: var(--primary);
+    color: var(--primary-fg);
+  }
+
+  @media (min-width: 768px) {
+    h1 {
+      font-size: 60px;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, mm } from '../../lib/motion';
+
+  mm.add('(prefers-reduced-motion: no-preference)', () => {
+    // Entrance: everything tagged fades up after the curtain has lifted.
+    gsap.set('.fade-in-later', { autoAlpha: 0, y: 30 });
+    gsap.timeline({ delay: 0.5 }).to('.fade-in-later', { autoAlpha: 1, y: 0, stagger: 0.1 });
+
+    // Image parallax: background drifts from centre to top as each image crosses the viewport.
+    document.querySelectorAll<HTMLElement>('#images > div').forEach((div, i) => {
+      gsap.to(div, {
+        backgroundPosition: 'center 0%',
+        ease: 'none',
+        scrollTrigger: { trigger: div, start: i ? 'top bottom' : 'top 50%', end: 'bottom top', scrub: true },
+      });
+    });
+  });
+
+  // Pinned blur-out: the info block stays put and blurs/shrinks while the images scroll over it.
+  mm.add('(prefers-reduced-motion: no-preference) and (min-width: 992px)', () => {
+    gsap.to('#info', {
+      filter: 'blur(3px)',
+      autoAlpha: 0,
+      scale: 0.9,
+      scrollTrigger: { trigger: '#info', start: 'bottom bottom', end: 'bottom top', pin: true, pinSpacing: false, scrub: 0.5 },
+    });
+  });
+</script>
