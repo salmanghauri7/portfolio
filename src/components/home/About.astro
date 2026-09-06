@@ -1,9 +1,86 @@
+---
+import { ABOUT, GENERAL_INFO } from '../../data/site';
+
+const greeting = ABOUT.greeting.replace('{name}', GENERAL_INFO.name);
+---
+
 <section id="about-me" class="about">
-  <div class="container">TODO lane A: About</div>
+  <div class="container about-inner">
+    <h2 class="statement slide-up-and-fade">{ABOUT.statement}</h2>
+    <p class="label slide-up-and-fade">{ABOUT.label}</p>
+    <div class="grid">
+      <p class="greeting slide-up-and-fade">{greeting}</p>
+      <div class="bio">
+        {ABOUT.paragraphs.map((text) => <p class="slide-up-and-fade">{text}</p>)}
+      </div>
+    </div>
+  </div>
 </section>
 
 <style>
   .about {
     padding-bottom: var(--section);
   }
+  .statement {
+    font-size: 36px;
+    font-weight: 100;
+    line-height: 1;
+    margin-bottom: 80px;
+  }
+  .label {
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted-fg);
+  }
+  .grid {
+    margin-top: 36px;
+    display: grid;
+    gap: var(--gap);
+  }
+  .greeting {
+    font-size: 48px;
+    line-height: 1;
+  }
+  .bio {
+    max-width: 450px;
+    font-size: 18px;
+    color: var(--muted-fg);
+  }
+  .bio p + p {
+    margin-top: 12px;
+  }
+
+  @media (min-width: 768px) {
+    .statement {
+      font-size: 60px;
+    }
+    .grid {
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .greeting {
+      grid-column: span 5;
+    }
+    .bio {
+      grid-column: span 7;
+    }
+  }
 </style>
+
+<script>
+  import { gsap, mm } from '../../lib/motion';
+
+  mm.add('(prefers-reduced-motion: no-preference)', () => {
+    const container = '#about-me .about-inner';
+    const items = '#about-me .slide-up-and-fade';
+
+    // scroll-in: `from` so the no-JS / reduced-motion rest state is the visible one
+    gsap
+      .timeline({ scrollTrigger: { trigger: container, start: 'top 70%', end: 'bottom bottom', scrub: 0.5 } })
+      .from(items, { y: 150, opacity: 0, stagger: 0.05 });
+
+    // scroll-out
+    gsap
+      .timeline({ scrollTrigger: { trigger: container, start: 'bottom 50%', end: 'bottom 10%', scrub: 0.5 } })
+      .to(items, { y: -150, opacity: 0, stagger: 0.02 });
+  });
+</script>

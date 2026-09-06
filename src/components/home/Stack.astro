@@ -1,3 +1,99 @@
+---
+import { MY_STACK } from '../../data/site';
+import SectionTitle from '../SectionTitle.astro';
+
+const categories = Object.entries(MY_STACK).filter(([, items]) => items.length);
+---
+
 <section id="my-stack" class="stack">
-  <div class="container">TODO lane A: Stack</div>
+  <div class="container">
+    <SectionTitle title="My Stack" />
+    <div class="rows">
+      {
+        categories.map(([category, items]) => (
+          <div class="row">
+            <p class="category slide-up">{category}</p>
+            <div class="items">
+              {items.map((item) => (
+                <div class="item slide-up">
+                  <img src={item.icon} alt={item.name} width="40" height="40" loading="lazy" />
+                  <span>{item.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
 </section>
+
+<style>
+  /* no section padding: Stack sits inside About's bottom padding */
+  .rows {
+    display: flex;
+    flex-direction: column;
+    row-gap: 80px;
+  }
+  .row {
+    display: grid;
+    gap: var(--gap);
+  }
+  .category {
+    font: 400 48px/1 var(--font-anton);
+    text-transform: uppercase;
+    color: var(--muted-fg);
+  }
+  .items {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 44px;
+    row-gap: 36px;
+  }
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    line-height: 1;
+  }
+  .item img {
+    width: 40px;
+    height: 40px;
+    max-height: 40px;
+    object-fit: contain;
+  }
+  .item span {
+    font-size: 24px;
+    text-transform: capitalize;
+  }
+
+  @media (min-width: 640px) {
+    .row {
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .category {
+      grid-column: span 5;
+    }
+    .items {
+      grid-column: span 7;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, mm } from '../../lib/motion';
+
+  mm.add('(prefers-reduced-motion: no-preference)', () => {
+    const section = '#my-stack';
+
+    // scrubbed stagger: each label/item pops in one after another, tied to scroll position
+    gsap
+      .timeline({ scrollTrigger: { trigger: section, start: 'top 80%', end: 'bottom 80%', scrub: 0.5 } })
+      .from('#my-stack .slide-up', { opacity: 0, y: 40, ease: 'none', stagger: 0.4 });
+
+    // scroll-out: the whole section drifts up
+    gsap
+      .timeline({ scrollTrigger: { trigger: section, start: 'bottom 50%', end: 'bottom 10%', scrub: 1 } })
+      .to(section, { y: -150, opacity: 0 });
+  });
+</script>
