@@ -23,7 +23,7 @@ import SectionTitle from '../SectionTitle.astro';
               <div class="row">
                 <p class="index">_{String(i + 1).padStart(2, '0')}.</p>
                 <div>
-                  <h4 class="title">
+                  <h3 class="title">
                     {p.title}
                     <span class="icon" aria-hidden="true">
                       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -32,7 +32,7 @@ import SectionTitle from '../SectionTitle.astro';
                         <path class="arrow-curb" d="M15 3h6v6" />
                       </svg>
                     </span>
-                  </h4>
+                  </h3>
                   <div class="tags">
                     {p.techStack.slice(0, 3).map((t, j) => (
                       <>

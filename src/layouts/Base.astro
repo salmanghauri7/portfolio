@@ -1,7 +1,7 @@
 ---
 import { Font } from 'astro:assets';
 import '../styles/global.css';
-import { GENERAL_INFO } from '../data/site';
+import { GENERAL_INFO, HERO } from '../data/site';
 import Curtain from '../components/Curtain.astro';
 import Preloader from '../components/Preloader.astro';
 import Nav from '../components/Nav.astro';
@@ -15,7 +15,7 @@ interface Props {
   title?: string;
   description?: string;
 }
-const { title = GENERAL_INFO.name, description = '' } = Astro.props;
+const { title = GENERAL_INFO.name, description = HERO.intro.replace('{name}', GENERAL_INFO.name) } = Astro.props;
 ---
 
 <!doctype html>
