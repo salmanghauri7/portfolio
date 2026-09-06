@@ -1,9 +1,272 @@
+---
+import { Image } from 'astro:assets';
+import { PROJECTS } from '../../data/site';
+import SectionTitle from '../SectionTitle.astro';
+---
+
 <section id="selected-projects" class="projects-section">
-  <div class="container">TODO lane C: Projects</div>
+  <div class="container">
+    <SectionTitle title="Selected Projects" />
+    <div class="projects">
+      <!-- desktop: one stacked image per project, the one matching data-active is shown -->
+      <div class="float" data-active="" aria-hidden="true">
+        {PROJECTS.map((p) => <Image src={p.thumbnail} alt="" width={400} height={500} loading="lazy" data-slug={p.slug} />)}
+      </div>
+
+      <div class="list">
+        {
+          PROJECTS.map((p, i) => (
+            <a class="project-item" href={`/projects/${p.slug}`} data-transition data-slug={p.slug}>
+              <div class="mobile-thumb">
+                <Image src={p.thumbnail} alt={p.title} width={400} loading="lazy" />
+              </div>
+              <div class="row">
+                <p class="index">_{String(i + 1).padStart(2, '0')}.</p>
+                <div>
+                  <h4 class="title">
+                    {p.title}
+                    <span class="icon" aria-hidden="true">
+                      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path class="box" d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                        <path class="arrow-line" d="M10 14 21 3" />
+                        <path class="arrow-curb" d="M15 3h6v6" />
+                      </svg>
+                    </span>
+                  </h4>
+                  <div class="tags">
+                    {p.techStack.slice(0, 3).map((t, j) => (
+                      <>
+                        {j > 0 && <span class="sep" />}
+                        <span>{t}</span>
+                      </>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
 </section>
 
 <style>
   .projects-section {
     padding-bottom: var(--section);
   }
+  .projects {
+    position: relative;
+  }
+
+  /* floating 3:4 thumbnail, desktop only */
+  .float {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1;
+    pointer-events: none;
+    width: 200px;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    opacity: 0;
+  }
+  .float :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+  .float :global(img.is-active) {
+    opacity: 1;
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+    row-gap: 40px;
+  }
+  .project-item {
+    display: block;
+    line-height: 1;
+    transition: all 0.15s;
+  }
+  .mobile-thumb :global(img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    object-position: top;
+    margin-bottom: 24px;
+  }
+  .row {
+    display: flex;
+    gap: 8px;
+  }
+  .index {
+    font: 400 16px/1 var(--font-anton);
+    color: var(--muted-fg);
+  }
+  .title {
+    display: flex;
+    gap: 16px;
+    font: 400 36px/1 var(--font-anton);
+    /* amber wipe: right half (fg) shows at rest, left half (amber) sweeps in on hover */
+    background-image: linear-gradient(to right, var(--primary) 0 50%, var(--fg) 50% 100%);
+    background-size: 200% 100%;
+    background-position: right;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: background-position 0.7s;
+  }
+  .icon {
+    color: var(--fg);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .tags {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--muted-fg);
+  }
+  .sep {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--bg-light);
+  }
+
+  @media (min-width: 420px) {
+    .title {
+      font-size: 60px;
+    }
+  }
+  @media (min-width: 768px) {
+    .float {
+      display: block;
+    }
+    .mobile-thumb {
+      display: none;
+    }
+    .list {
+      row-gap: 0;
+    }
+    .project-item {
+      padding-block: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .project-item:first-child {
+      padding-top: 0;
+    }
+    .project-item:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .row {
+      gap: 20px;
+    }
+    /* hovering any row dims the siblings */
+    .projects:hover .project-item {
+      opacity: 0.3;
+    }
+    .projects .project-item:hover {
+      opacity: 1;
+    }
+    .project-item:hover .title {
+      background-position: left;
+    }
+    .project-item:hover .icon {
+      opacity: 1;
+    }
+  }
+  @media (min-width: 1280px) {
+    .float {
+      width: 350px;
+    }
+  }
 </style>
+
+<script>
+  import { gsap, mm } from '../../lib/motion';
+
+  const projects = document.querySelector<HTMLElement>('#selected-projects .projects');
+
+  if (projects) {
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+      gsap
+        .timeline({
+          scrollTrigger: { trigger: projects, start: 'top bottom', end: 'top 80%', scrub: 1, toggleActions: 'restart none none reverse' },
+        })
+        .from(projects, { y: 150, opacity: 0 });
+    });
+
+    // Hover: icon draw loop, thumbnail swap, thumbnail trailing the cursor. Desktop, fine pointer only.
+    mm.add('(prefers-reduced-motion: no-preference) and (min-width: 768px) and (pointer: fine)', () => {
+      const ac = new AbortController();
+      const { signal } = ac;
+      const float = projects.querySelector<HTMLElement>('.float')!;
+      const thumbs = float.querySelectorAll<HTMLElement>('img');
+
+      for (const item of projects.querySelectorAll<HTMLElement>('.project-item')) {
+        const svg = item.querySelector('svg')!;
+        const paths = [...svg.querySelectorAll<SVGPathElement>('path')]; // box, arrow-line, arrow-curb
+        let tl: gsap.core.Timeline | null = null;
+
+        item.addEventListener(
+          'mouseenter',
+          () => {
+            float.dataset.active = item.dataset.slug;
+            thumbs.forEach((img) => img.classList.toggle('is-active', img.dataset.slug === item.dataset.slug));
+
+            for (const p of paths) {
+              const len = p.getTotalLength();
+              gsap.set(p, { opacity: 0, strokeDasharray: len, strokeDashoffset: len });
+            }
+            const [box, line, curb] = paths;
+            tl = gsap
+              .timeline({ repeat: -1, repeatDelay: 1 })
+              .to(svg, { autoAlpha: 1 })
+              .to(box, { opacity: 1, strokeDashoffset: 0 })
+              .to(line, { opacity: 1, strokeDashoffset: 0 }, '<0.2')
+              .to(curb, { opacity: 1, strokeDashoffset: 0 })
+              .to(svg, { autoAlpha: 0 }, '+=1');
+          },
+          { signal },
+        );
+
+        item.addEventListener(
+          'mouseleave',
+          () => {
+            tl?.kill();
+            tl = null;
+            gsap.set([svg, ...paths], { clearProps: 'all' });
+          },
+          { signal },
+        );
+      }
+
+      window.addEventListener(
+        'mousemove',
+        (e) => {
+          const rect = projects.getBoundingClientRect();
+          const inside = e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
+          if (!inside) gsap.to(float, { opacity: 0, duration: 0.3 });
+          else gsap.to(float, { y: e.clientY - rect.top - float.offsetHeight / 2, opacity: 1, duration: 1 });
+        },
+        { signal },
+      );
+
+      return () => ac.abort();
+    });
+  }
+</script>
