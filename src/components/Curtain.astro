@@ -1,0 +1,52 @@
+<div class="curtain">
+  <div class="curtain-inner"></div>
+</div>
+
+<style>
+  .curtain {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    background: var(--bg-light);
+  }
+  .curtain-inner {
+    position: fixed;
+    inset: 0;
+    background: var(--primary);
+    transform: translateY(100%);
+  }
+</style>
+
+<script>
+  import { gsap, reduce } from '../lib/motion';
+
+  const curtain = document.querySelector<HTMLElement>('.curtain')!;
+
+  // Every load: amber sheet sweeps up through the grey cover, then the cover lifts off.
+  if (reduce) {
+    gsap.set(curtain, { autoAlpha: 0 });
+  } else {
+    // GSAP reads the CSS translateY(100%) as pixels; seed yPercent so the tweens below move it.
+    gsap.set('.curtain-inner', { y: 0, yPercent: 100 });
+    gsap
+      .timeline({ onComplete: () => gsap.set(curtain, { visibility: 'hidden' }) })
+      .to('.curtain-inner', { yPercent: 0, duration: 0.2 })
+      .to('.curtain-inner', { yPercent: -100, duration: 0.2 })
+      .to(curtain, { yPercent: -100 });
+  }
+
+  // Leaving via a[data-transition]: grey rises from the bottom, then the page unloads.
+  document.addEventListener('click', (e) => {
+    const link = (e.target as Element).closest<HTMLAnchorElement>('a[data-transition]');
+    if (!link || reduce || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    e.preventDefault();
+    gsap.set(curtain, { yPercent: 100, visibility: 'visible' });
+    gsap.set('.curtain-inner', { yPercent: 100 });
+    gsap.to(curtain, { yPercent: 0, duration: 0.3, onComplete: () => location.assign(link.href) });
+  });
+
+  // Back button restoring this page from bfcache would otherwise leave it covered.
+  addEventListener('pageshow', (e) => {
+    if (e.persisted) gsap.set(curtain, { autoAlpha: 0 });
+  });
+</script>

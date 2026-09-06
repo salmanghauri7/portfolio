@@ -1,0 +1,35 @@
+<!-- Fixed dot grid with scroll parallax. Replaces the original's particle field. -->
+<div class="backdrop" aria-hidden="true">
+  <div class="backdrop-grid"></div>
+</div>
+
+<style>
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: -1; /* spec table says 0, but 0 paints over static page text; -1 sits above the body background and below all content */
+    pointer-events: none;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(transparent, #000 12%, #000 78%, transparent);
+    mask-image: linear-gradient(transparent, #000 12%, #000 78%, transparent);
+  }
+  .backdrop-grid {
+    position: absolute;
+    inset: -32px 0; /* one spare tile top and bottom so the 32px loop never shows a gap */
+    background-image: radial-gradient(circle, var(--grid-dot) 1px, transparent 1.5px);
+    background-size: 32px 32px;
+    will-change: transform;
+  }
+</style>
+
+<script>
+  import { lenis, mm } from '../lib/motion';
+
+  mm.add('(prefers-reduced-motion: no-preference)', () => {
+    const grid = document.querySelector<HTMLElement>('.backdrop-grid')!;
+    // 0.15x scroll speed; modulo keeps the shift inside one tile so it loops seamlessly.
+    lenis?.on('scroll', (e) => {
+      grid.style.transform = `translateY(${-(e.scroll * 0.15) % 32}px)`;
+    });
+  });
+</script>

@@ -1,0 +1,34 @@
+---
+import { GENERAL_INFO } from '../data/site';
+---
+
+<div class="sticky-email">
+  <a href={`mailto:${GENERAL_INFO.email}`}>{GENERAL_INFO.email}</a>
+</div>
+
+<style>
+  .sticky-email {
+    position: fixed;
+    bottom: 128px;
+    left: 0;
+    z-index: 1;
+    display: none;
+  }
+  @media (min-width: 1280px) {
+    .sticky-email {
+      display: block;
+    }
+  }
+  a {
+    display: block;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    padding: 0 12px; /* physical: in vertical-rl, padding-inline would be top/bottom */
+    letter-spacing: 1px;
+    color: var(--muted-fg);
+    transition: all 0.15s;
+  }
+  a:hover {
+    color: var(--fg);
+  }
+</style>

@@ -1,0 +1,156 @@
+---
+import { GENERAL_INFO, HERO } from '../../data/site';
+import Button from '../Button.astro';
+import ChevronArrow from '../ChevronArrow.astro';
+
+const [introBefore, introAfter] = HERO.intro.split('{name}');
+---
+
+<section id="banner" class="hero">
+  <div class="container hero-inner">
+    <div class="hero-main">
+      <h1 class="slide-up-and-fade">
+        <span class="line-1">{HERO.titleLine1}</span><br />
+        <span class="line-2">{HERO.titleLine2}</span>
+      </h1>
+      <p class="intro slide-up-and-fade">{introBefore}<span class="name">{GENERAL_INFO.name}</span>{introAfter}</p>
+      <div class="cta slide-up-and-fade">
+        <Button href={GENERAL_INFO.ctaUrl} target="_blank">{HERO.ctaLabel}</Button>
+      </div>
+    </div>
+    <div class="stats">
+      {
+        HERO.stats.map((stat) => (
+          <div class="stat slide-up-and-fade">
+            <p class="stat-value">{stat.value}</p>
+            <p class="stat-label">{stat.label}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+  <div class="hero-chevron"><ChevronArrow /></div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden; /* contains the chevron drop */
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 1; /* text above the chevron */
+    height: 100svh;
+    min-height: 530px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 40px;
+  }
+  .hero-main {
+    max-width: 544px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  h1 {
+    font: 400 60px/0.95 var(--font-anton);
+    text-transform: uppercase;
+  }
+  .line-1 {
+    color: var(--primary);
+  }
+  .line-2 {
+    margin-left: 16px;
+  }
+  .intro {
+    margin-top: 24px;
+    font-size: 18px;
+    color: var(--muted-fg);
+  }
+  .name {
+    font-weight: 500;
+    color: var(--fg);
+  }
+  .cta {
+    margin-top: 36px;
+  }
+  .availability {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--muted-fg);
+  }
+  .availability-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .stats {
+    display: flex;
+    gap: 16px;
+    text-align: center;
+  }
+  .stat-value {
+    font: 400 30px/1 var(--font-anton);
+    color: var(--primary);
+    margin-bottom: 6px;
+  }
+  .stat-label {
+    color: var(--muted-fg);
+  }
+  .hero-chevron {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 0;
+  }
+
+  @media (min-width: 640px) {
+    h1 {
+      font-size: 80px;
+    }
+    .stat-value {
+      font-size: 36px;
+    }
+  }
+  @media (min-width: 768px) {
+    .hero-inner {
+      flex-direction: row;
+      padding-bottom: 0;
+    }
+    .hero-main {
+      flex-grow: 0;
+      display: block;
+    }
+    .stats {
+      position: absolute;
+      bottom: 10%;
+      right: 4%;
+      flex-direction: column;
+      gap: 32px;
+      text-align: right;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, mm } from '../../lib/motion';
+
+  // Scroll-out only: hero is visible on load (behind the preloader), no scroll-in.
+  mm.add('(prefers-reduced-motion: no-preference)', () => {
+    gsap
+      .timeline({
+        scrollTrigger: { trigger: '#banner .hero-inner', start: 'bottom 70%', end: 'bottom 10%', scrub: 1 },
+      })
+      .fromTo('#banner .slide-up-and-fade', { y: 0 }, { y: -150, opacity: 0, stagger: 0.02 });
+  });
+</script>

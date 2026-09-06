@@ -1,0 +1,282 @@
+---
+import { GENERAL_INFO, MENU_LINKS, SOCIAL_LINKS } from '../data/site';
+---
+
+<div class="nav">
+  <button class="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+    <span class="bar bar-top"></span>
+    <span class="bar bar-bottom"></span>
+  </button>
+</div>
+
+<div class="overlay"></div>
+
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true" inert>
+  <div class="drawer-bg"></div>
+  <div class="drawer-content">
+    <div class="columns">
+      <div class="social">
+        <p class="label">Social</p>
+        <ul>
+          {
+            SOCIAL_LINKS.map((link) => (
+              <li>
+                <a href={link.url} target="_blank" rel="noopener">
+                  {link.name}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="menu">
+        <p class="label">Menu</p>
+        <ul>
+          {
+            MENU_LINKS.map((link, i) => (
+              <li>
+                <a href={link.url} style={`--dot: var(--dot-${i + 1})`}>
+                  <span class="dot" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M13 5H19V11" />
+                      <path d="M19 5L5 19" />
+                    </svg>
+                  </span>
+                  {link.name}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-bottom">
+    <p class="label">Get in touch</p>
+    <a href={`mailto:${GENERAL_INFO.email}`}>{GENERAL_INFO.email}</a>
+  </div>
+</div>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    height: 0;
+  }
+  .burger {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 48px;
+    height: 48px;
+  }
+  .bar {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 60%;
+    height: 2px;
+    border-radius: 9999px;
+    background: var(--fg);
+    transition: transform 0.3s;
+  }
+  .bar-top {
+    transform: translate(-50%, -5px);
+  }
+  .bar-bottom {
+    transform: translate(-50%, 5px);
+  }
+  .burger:hover .bar-top {
+    transform: translate(-50%, -5px) rotate(12deg);
+  }
+  .burger:hover .bar-bottom {
+    transform: translate(-50%, 5px) rotate(-12deg);
+  }
+  .burger[aria-expanded='true'] .bar-top {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  .burger[aria-expanded='true'] .bar-bottom {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    background: var(--overlay);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.15s, visibility 0.15s;
+  }
+  .overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 3;
+    height: 100dvh;
+    width: 500px;
+    max-width: calc(100vw - 3rem);
+    transform: translateX(100%);
+    transition: transform 0.7s;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding-block: 40px;
+    row-gap: 56px;
+  }
+  .drawer.is-open {
+    transform: translateX(0);
+  }
+  /* grey panel enters as a huge circle whose curved left edge sweeps in slightly after the panel */
+  .drawer-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    border-radius: 50%;
+    background: var(--bg-light);
+    transform: scale(1.5) translateX(50%);
+    transition: transform 0.7s 0.15s;
+  }
+  .drawer.is-open .drawer-bg {
+    transform: scale(1.5) translateX(0);
+  }
+
+  .drawer-content,
+  .drawer-bottom {
+    width: 100%;
+    max-width: 300px;
+    margin-inline: 32px;
+  }
+  .drawer-content {
+    flex-grow: 1;
+    display: flex;
+  }
+  .columns {
+    display: flex;
+    flex-direction: column-reverse; /* MENU above SOCIAL when stacked */
+    gap: 40px;
+  }
+  .label {
+    color: var(--muted-fg);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .drawer-bottom .label {
+    margin-bottom: 16px;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 12px;
+  }
+  .social a {
+    font-size: 18px;
+    text-transform: capitalize;
+  }
+  .social a:hover,
+  .drawer-bottom a:hover {
+    text-decoration: underline;
+  }
+  .menu a {
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .dot {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--dot);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .dot svg {
+    width: 8px;
+    height: 8px;
+    color: var(--bg);
+    transform: scale(0);
+    transition: transform 0.15s;
+  }
+  .menu a:hover .dot {
+    transform: scale(2);
+  }
+  .menu a:hover .dot svg {
+    transform: scale(1);
+  }
+
+  @media (min-width: 640px) {
+    .drawer-content,
+    .drawer-bottom {
+      margin-inline: auto;
+    }
+  }
+  @media (min-width: 768px) {
+    .burger {
+      right: 40px;
+    }
+    .drawer-content {
+      align-items: center;
+    }
+    .label {
+      margin-bottom: 32px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .drawer {
+      justify-content: center;
+    }
+    .columns {
+      flex-direction: row;
+    }
+  }
+</style>
+
+<script>
+  const burger = document.querySelector<HTMLButtonElement>('.burger')!;
+  const overlay = document.querySelector<HTMLElement>('.overlay')!;
+  const drawer = document.querySelector<HTMLElement>('.drawer')!;
+
+  function setOpen(open: boolean) {
+    burger.setAttribute('aria-expanded', String(open));
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    overlay.classList.toggle('is-open', open);
+    drawer.classList.toggle('is-open', open);
+    drawer.setAttribute('aria-hidden', String(!open));
+    drawer.inert = !open;
+    (open ? drawer.querySelector<HTMLElement>('a') : burger)?.focus({ preventScroll: true });
+  }
+
+  burger.addEventListener('click', () => setOpen(burger.getAttribute('aria-expanded') !== 'true'));
+  overlay.addEventListener('click', () => setOpen(false));
+  // Menu links close the drawer; Lenis (anchors: true) smooth-scrolls same-page hashes.
+  drawer.addEventListener('click', (e) => {
+    if ((e.target as Element).closest('a')) setOpen(false);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (drawer.inert) return;
+    if (e.key === 'Escape') return setOpen(false);
+    if (e.key !== 'Tab') return;
+    // Trap focus: cycle burger (the X) + drawer links.
+    const items = [burger, ...drawer.querySelectorAll<HTMLElement>('a[href]')];
+    const i = items.indexOf(document.activeElement as HTMLElement);
+    const next = e.shiftKey ? (i <= 0 ? items.length - 1 : i - 1) : i >= items.length - 1 ? 0 : i + 1;
+    e.preventDefault();
+    items[next].focus({ preventScroll: true });
+  });
+</script>

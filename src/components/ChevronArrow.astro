@@ -1,0 +1,38 @@
+<!-- Self-drawing chevron (hero + project page). Parent positions it with a wrapper. -->
+<svg class="chevron" width="376" height="111" viewBox="0 0 376 111" aria-hidden="true">
+  <path d="M1 1V39.9286L188 110V70.6822L1 1Z"></path>
+  <path d="M375 1V39.9286L188 110V70.6822L375 1Z"></path>
+</svg>
+
+<style>
+  .chevron {
+    fill: transparent;
+  }
+  .chevron path {
+    stroke: var(--chevron);
+    stroke-width: 1;
+  }
+</style>
+
+<script>
+  import { gsap, mm } from '../lib/motion';
+
+  mm.add('(prefers-reduced-motion: no-preference)', () => {
+    document.querySelectorAll<SVGSVGElement>('svg.chevron').forEach((svg) => {
+      const paths = Array.from(svg.querySelectorAll('path'));
+      gsap.set(svg, { autoAlpha: 0 });
+      paths.forEach((p) => {
+        const len = p.getTotalLength();
+        p.style.strokeDasharray = `${len}`;
+        p.style.strokeDashoffset = `${len}`;
+      });
+      gsap
+        .timeline({ repeat: -1 })
+        .to(svg, { autoAlpha: 1, duration: 0.1 })
+        .to(paths, { strokeDashoffset: 0, duration: 2, delay: 1 })
+        .to(svg, { fill: '#F0ECE608', duration: 0.5, delay: 0.5 }) // same value as --chevron-fill; GSAP needs the literal
+        .to(svg, { y: 300, duration: 1 })
+        .to(svg, { autoAlpha: 0, duration: 0 });
+    });
+  });
+</script>

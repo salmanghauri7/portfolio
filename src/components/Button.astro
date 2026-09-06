@@ -1,0 +1,51 @@
+---
+interface Props {
+  href?: string;
+  target?: string;
+}
+const { href, target } = Astro.props;
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag class="btn" href={href} target={target} rel={target === '_blank' ? 'noopener' : undefined}>
+  <span class="btn-label"><slot /></span>
+  <span class="btn-fill" aria-hidden="true"></span>
+</Tag>
+
+<style>
+  .btn {
+    position: relative;
+    overflow: hidden;
+    height: 48px;
+    padding-inline: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font: 400 18px var(--font-anton);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: var(--primary);
+    color: var(--primary-fg);
+    transition: color 0.15s;
+  }
+  .btn-label {
+    position: relative;
+    z-index: 1;
+  }
+  /* white blob rises and fills the button; text stays dark on white (kept quirk) */
+  .btn-fill {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 200%;
+    height: 100%;
+    background: #fff;
+    border-radius: 50%;
+    transform: scale(1.5);
+    transition: top 0.5s;
+  }
+  .btn:hover .btn-fill {
+    top: 0;
+  }
+</style>
