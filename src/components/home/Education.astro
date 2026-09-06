@@ -1,9 +1,91 @@
-<section id="education" class="education">
-  <div class="container">TODO lane B: Education</div>
+---
+import { MY_EDUCATION } from '../../data/site';
+import SectionTitle from '../SectionTitle.astro';
+---
+
+<section id="education" class="education-section">
+  <div class="container">
+    <SectionTitle title="Education" />
+    <ul class="education">
+      {
+        MY_EDUCATION.map((edu) => (
+          <li class="edu-item">
+            <div>
+              <p class="duration">{edu.duration}</p>
+              <p class="school">{edu.school}</p>
+            </div>
+            <div>
+              <p class="degree">{edu.degree}</p>
+              {edu.detail && <p class="detail">{edu.detail}</p>}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </section>
 
 <style>
-  .education {
+  .education-section {
     padding-bottom: var(--section);
   }
+  .education {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+  }
+  .edu-item {
+    padding-block: 32px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    gap: 12px 25px;
+  }
+  .duration {
+    font-size: 14px;
+    line-height: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted-fg);
+  }
+  .school {
+    font-size: 20px;
+    line-height: 28px;
+    margin-top: 8px;
+  }
+  .degree {
+    font: 400 28px/1 var(--font-anton);
+  }
+  .detail {
+    margin-top: 10px;
+    max-width: 450px;
+    color: var(--muted-fg);
+  }
+
+  @media (min-width: 640px) {
+    .edu-item {
+      grid-template-columns: 5fr 7fr;
+    }
+    .degree {
+      font-size: 36px;
+    }
+  }
 </style>
+
+<script>
+  import { gsap, mm } from '../../lib/motion';
+
+  mm.add('(prefers-reduced-motion: no-preference)', () => {
+    gsap
+      .timeline({
+        scrollTrigger: { trigger: '#education .container', start: 'top 70%', end: 'bottom bottom', scrub: 0.5 },
+      })
+      .from('#education .edu-item', { y: 50, opacity: 0, stagger: 0.15 });
+
+    gsap
+      .timeline({
+        scrollTrigger: { trigger: '#education .container', start: 'bottom 50%', end: 'bottom 20%', scrub: 1 },
+      })
+      .to('#education .container', { y: -150, opacity: 0 });
+  });
+</script>
