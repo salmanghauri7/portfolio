@@ -1,6 +1,8 @@
 <!-- Fixed dot grid with scroll parallax. Replaces the original's particle field. -->
+<!-- Desktop + fine pointer: a canvas takes over the grid so the dots can flow around the pointer inside the hero. -->
 <div class="backdrop" aria-hidden="true">
   <div class="backdrop-grid"></div>
+  <canvas class="backdrop-liquid" hidden></canvas>
 </div>
 
 <style>
@@ -20,16 +22,130 @@
     background-size: 32px 32px;
     will-change: transform;
   }
+  .backdrop-liquid {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--grid-dot); /* read back as rgb() for the canvas fill */
+  }
 </style>
 
 <script>
-  import { lenis, mm } from '../lib/motion';
+  import { gsap, lenis, mm } from '../lib/motion';
+
+  const TILE = 32;
+  const PARALLAX = 0.15; // grid scrolls at 0.15x page speed
 
   mm.add('(prefers-reduced-motion: no-preference)', () => {
     const grid = document.querySelector<HTMLElement>('.backdrop-grid')!;
-    // 0.15x scroll speed; modulo keeps the shift inside one tile so it loops seamlessly.
+    // modulo keeps the shift inside one tile so it loops seamlessly.
     lenis?.on('scroll', (e) => {
-      grid.style.transform = `translateY(${-(e.scroll * 0.15) % 32}px)`;
+      grid.style.transform = `translateY(${-(e.scroll * PARALLAX) % TILE}px)`;
     });
+  });
+
+  // Liquid dots: the same grid drawn on a canvas. Dots near the pointer get shoved aside and dragged
+  // along with it, then spring back with damping. Only the hero listens for the pointer, so the rest
+  // of the page stays a plain grid. Loop idles once every dot is at rest and the page isn't scrolling.
+  mm.add('(prefers-reduced-motion: no-preference) and (pointer: fine) and (min-width: 768px)', () => {
+    const grid = document.querySelector<HTMLElement>('.backdrop-grid')!;
+    const canvas = document.querySelector<HTMLCanvasElement>('.backdrop-liquid')!;
+    const ctx = canvas.getContext('2d')!;
+    const hero = document.getElementById('banner');
+    grid.hidden = true;
+    canvas.hidden = false;
+
+    const RADIUS = 120; // pointer influence, px
+    const PUSH = 1.0; // shove away from the pointer; settles ~16px under a resting pointer
+    const STIR = 0.12; // share of pointer velocity handed to the dots beneath it
+    const SPRING = 0.06;
+    const DAMP = 0.88;
+
+    let w = 0, h = 0, cols = 0, rows = 0;
+    let ox = new Float32Array(0), oy = ox, vx = ox, vy = ox; // offset from rest, velocity
+    let mx = -1e4, my = -1e4, pmx = mx, pmy = my; // pointer now / last frame; far away = idle
+    let lastScroll = -1;
+    let active = true;
+
+    const size = () => {
+      const dpr = devicePixelRatio || 1;
+      w = innerWidth;
+      h = innerHeight;
+      canvas.width = w * dpr; // resets ctx state, so fill + transform come after
+      canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.fillStyle = getComputedStyle(canvas).color;
+      cols = Math.ceil(w / TILE) + 1;
+      rows = Math.ceil(h / TILE) + 2; // spare row above and below, like the CSS grid's -32px inset
+      ox = new Float32Array(cols * rows);
+      oy = new Float32Array(cols * rows);
+      vx = new Float32Array(cols * rows);
+      vy = new Float32Array(cols * rows);
+      active = true;
+    };
+
+    const step = () => {
+      const sy = scrollY;
+      if (!active && sy === lastScroll) return;
+      lastScroll = sy;
+      const shift = -(sy * PARALLAX) % TILE;
+      const mvx = Math.max(-40, Math.min(40, mx - pmx));
+      const mvy = Math.max(-40, Math.min(40, my - pmy));
+      pmx = mx;
+      pmy = my;
+      active = false;
+      ctx.clearRect(0, 0, w, h);
+      ctx.beginPath();
+      for (let j = 0; j < rows; j++) {
+        for (let i = 0; i < cols; i++) {
+          const n = j * cols + i;
+          const rx = TILE / 2 + i * TILE;
+          const ry = TILE / 2 - TILE + j * TILE + shift;
+          const dx = rx + ox[n] - mx;
+          const dy = ry + oy[n] - my;
+          const d = Math.hypot(dx, dy) || 1;
+          if (d < RADIUS) {
+            const f = (1 - d / RADIUS) ** 2;
+            vx[n] += (dx / d) * PUSH * f + mvx * STIR * f;
+            vy[n] += (dy / d) * PUSH * f + mvy * STIR * f;
+          }
+          vx[n] = (vx[n] - ox[n] * SPRING) * DAMP;
+          vy[n] = (vy[n] - oy[n] * SPRING) * DAMP;
+          ox[n] += vx[n];
+          oy[n] += vy[n];
+          const off = Math.hypot(ox[n], oy[n]);
+          if (off + Math.abs(vx[n]) + Math.abs(vy[n]) > 0.05) active = true;
+          const x = rx + ox[n];
+          const y = ry + oy[n];
+          const r = 1.25 + Math.min(off * 0.04, 1); // displaced dots swell a touch, like a ripple catching light
+          ctx.moveTo(x + r, y);
+          ctx.arc(x, y, r, 0, Math.PI * 2);
+        }
+      }
+      ctx.fill();
+    };
+
+    const move = (e: MouseEvent) => {
+      mx = e.clientX;
+      my = e.clientY;
+      active = true;
+    };
+    const leave = () => {
+      mx = my = -1e4;
+    };
+    hero?.addEventListener('mousemove', move);
+    hero?.addEventListener('mouseleave', leave);
+    addEventListener('resize', size);
+    size();
+    gsap.ticker.add(step);
+    return () => {
+      gsap.ticker.remove(step);
+      removeEventListener('resize', size);
+      hero?.removeEventListener('mousemove', move);
+      hero?.removeEventListener('mouseleave', leave);
+      canvas.hidden = true;
+      grid.hidden = false;
+    };
   });
 </script>

@@ -1,18 +1,5 @@
 ---
 import { GENERAL_INFO } from '../data/site';
-
-// Star/fork counts for THIS site's repo, fetched at build time; silently omitted when unset or the API fails.
-let stats: { stars: number; forks: number } | null = null;
-const repo = GENERAL_INFO.repoUrl.match(/github\.com\/([^/]+\/[^/#?]+)/)?.[1];
-if (repo) {
-  try {
-    const res = await fetch(`https://api.github.com/repos/${repo}`);
-    if (res.ok) {
-      const data = await res.json();
-      stats = { stars: data.stargazers_count, forks: data.forks_count };
-    }
-  } catch {}
-}
 ---
 
 <footer id="contact" class="footer">
@@ -20,7 +7,6 @@ if (repo) {
     <p class="lead">Have a project in mind?</p>
     <a class="email" href={`mailto:${GENERAL_INFO.email}`}>{GENERAL_INFO.email}</a>
     <div class="credit">
-      <a href="https://tajmirul.site" target="_blank" rel="noopener">Design by Tajmirul Islam</a>
       {
         GENERAL_INFO.repoUrl ? (
           <a href={GENERAL_INFO.repoUrl} target="_blank" rel="noopener">
@@ -28,28 +14,6 @@ if (repo) {
           </a>
         ) : (
           <span>Built by {GENERAL_INFO.name}</span>
-        )
-      }
-      {
-        stats && (
-          <div class="stats">
-            <span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Stars">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-              {stats.stars}
-            </span>
-            <span>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Forks">
-                <circle cx="12" cy="18" r="3" />
-                <circle cx="6" cy="6" r="3" />
-                <circle cx="18" cy="6" r="3" />
-                <path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9" />
-                <path d="M12 12v3" />
-              </svg>
-              {stats.forks}
-            </span>
-          </div>
         )
       }
     </div>
@@ -84,16 +48,6 @@ if (repo) {
   .credit a:hover {
     text-decoration: underline;
     color: var(--fg);
-  }
-  .stats {
-    display: flex;
-    gap: 20px;
-    padding-top: 4px;
-  }
-  .stats span {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
   }
   @media (min-width: 640px) {
     .email {

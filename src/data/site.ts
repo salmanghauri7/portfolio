@@ -1,24 +1,12 @@
 import type { ImageMetadata } from "astro";
-// PLACEHOLDER images — replace with real 400×500 thumbnails and ~1000×873 screenshots
-import demo1Thumb from '../assets/projects/thumbnail/demo-1.jpg';
-import demo1Img1 from '../assets/projects/images/demo-1-1.png';
-import demo1Img2 from '../assets/projects/images/demo-1-2.png';
-import demo2Thumb from '../assets/projects/thumbnail/demo-2.jpg';
-import demo2Img1 from '../assets/projects/images/demo-2-1.png';
-import demo2Img2 from '../assets/projects/images/demo-2-2.png';
-import demo3Thumb from '../assets/projects/thumbnail/demo-3.jpg';
-import demo3Img1 from '../assets/projects/images/demo-3-1.png';
-import demo3Img2 from '../assets/projects/images/demo-3-2.png';
-import demo4Thumb from '../assets/projects/thumbnail/demo-4.jpg';
-import demo4Img1 from '../assets/projects/images/demo-4-1.png';
-import demo4Img2 from '../assets/projects/images/demo-4-2.png';
+import dp from "../assets/dp.jpg";
 
 export const GENERAL_INFO = {
   name: "Muhammad Salman",
   preloaderName: "SALMAN", // uppercase, 4–10 letters, shown letter by letter in the preloader
   email: "hello.salman@gmail.com",
   ctaUrl: "mailto:hello.salman@gmail.com", // "Let's Talk" target (Upwork, Calendly, mailto…)
-  repoUrl: "", // optional: public GitHub repo of THIS site, enables star/fork counts in footer
+  repoUrl: "", // optional: public GitHub repo of THIS site, links the "Built by" credit
   siteUrl: "https://TODO",
 };
 
@@ -26,7 +14,6 @@ export const SOCIAL_LINKS = [
   // shown in drawer, order preserved
   { name: "github", url: "https://github.com/salmanghauri7" },
   { name: "linkedin", url: "https://linkedin.com/in/msalmanghauri" },
-  { name: "Muhammad Salman", url: "hello.salman@gmail.com" },
 ];
 
 export const MENU_LINKS = [
@@ -42,9 +29,9 @@ export const HERO = {
   titleLine1: "FULL STACK", // rendered in --primary (amber)
   titleLine2: "DEVELOPER", // rendered in foreground, indented 16px
   intro:
-    "Hi! I'm {name}. A creative Frontend Developer with 3+ years of experience in building high-performance, scalable, and responsive web solutions.", // TODO — {name} is bold foreground
+    "Hi! I'm {name}. A creative Full Stack Developer with 1+ years of experience in building high-performance, scalable, highly optimized applications.", // TODO — {name} is bold foreground
   ctaLabel: "Let's Talk",
-  availability: "Available for full-time opportunities", // TODO or ''
+  photo: dp, // portrait shown in the hero
   stats: [
     // exactly three
     { value: "1+", label: "Years of Experience" },
@@ -57,30 +44,70 @@ export const ABOUT = {
   statement:
     "I believe in a user centered design approach, ensuring that every project I work on is tailored to meet the specific needs of its users.", // TODO, 2–4 lines at 60px
   label: "This is me.",
-  greeting: "Hi, I'm Salman.",
+  greeting: "Hi, I'm {name}.",
   paragraphs: ["TODO paragraph 1", "TODO paragraph 2"],
 };
 
 // object key = category label, rendered uppercase
 export const MY_STACK: Record<string, { name: string; icon: string }[]> = {
+  languages: [
+    { name: "JavaScript", icon: "/logo/javascript.svg" },
+    { name: "Typescript", icon: "/logo/typescript.svg" },
+    { name: "C++", icon: "/logo/cpp.svg" },
+  ],
   frontend: [
     { name: "JavaScript", icon: "/logo/javascript.svg" },
     { name: "Typescript", icon: "/logo/typescript.svg" },
+    { name: "Electron.JS", icon: "/logo/electron.svg" },
     { name: "React.JS", icon: "/logo/react.svg" },
-    { name: 'Next.JS', icon: '/logo/nextjs.svg' },
-    { name: '', icon: '/logo/javascript.svg' }
+    { name: "Next.JS", icon: "/logo/nextjs.png" },
+    { name: "Astro", icon: "/logo/astro.svg" },
+    { name: "Redux", icon: "/logo/redux.svg" },
+    {name: "Tailwind", icon: "/logo/tailwind.svg"},
   ],
-  backend: [],
-  database: [],
-  tools: [],
+  backend: [
+    { name: "Node.JS", icon: "/logo/nodejs.svg" },
+    { name: "Express.JS", icon: "/logo/express.png" },
+    { name: "Fast Api", icon: "/logo/fastapi.svg" },
+    { name: "BullMQ", icon: "/logo/bullmq.svg" },
+    { name: "Socket.IO", icon: "/logo/socketio.svg" },
+    { name: "Zod", icon: "/logo/zod.svg" },
+  ],
+  database: [
+    { name: "MongoDb", icon: "/logo/mongodb.svg" },
+    { name: "PostgreSQL", icon: "/logo/postgresql.svg" },
+    { name: "Supabase", icon: "/logo/supabase.svg" },
+  ],
+  tools: [{name: "Git", icon: "/logo/git.svg"},
+    {name: "AWS", icon: "/logo/aws.svg"},
+    {name: "Vercel", icon: "/logo/vercel.svg"},
+    {name: "Docker", icon: "/logo/docker.svg"},
+    {name: "VS Code", icon: "/logo/vscode.svg"},
+  ],
+  "ai/ml": [
+    { name: "Machine Learning", icon: "/logo/ml.svg" },
+    { name: "Data Cleaning", icon: "/logo/data-cleaning.svg" },
+    { name: "Feature Engineering", icon: "/logo/feature-engineering.svg" },
+    { name: "RAG", icon: "/logo/rag.svg" },
+    { name: "NumPy", icon: "/logo/numpy.svg" },
+    { name: "Pandas", icon: "/logo/pandas.svg" },
+    { name: "Matplotlib", icon: "/logo/matplotlib.svg" },
+    { name: "Scikit-Learn", icon: "/logo/scikitlearn.svg" },
+  ],
 };
 
 export const MY_EXPERIENCE = [
   // newest first; rendered as the timeline
   {
-    title: "TODO Job Title",
-    company: "TODO Company",
-    duration: "Jan 2024 - Present",
+    title: "Full Stack Developer",
+    company: "Nasmak Labs",
+    duration: "April 2026 - Present",
+    summary: "TODO optional one or two lines on what you owned there",
+  },
+   {
+    title: "Full Stack Developer",
+    company: "InvexTech",
+    duration: "June 2025 - April 2026",
     summary: "TODO optional one or two lines on what you owned there",
   },
 ];
@@ -88,10 +115,25 @@ export const MY_EXPERIENCE = [
 export const MY_EDUCATION = [
   // newest first
   {
-    degree: "TODO BSc Computer Science",
-    school: "TODO University",
-    duration: "2018 - 2022",
-    detail: "TODO optional: focus, thesis, honours",
+    degree: "BS Computer Science",
+    school: "University Of Okara",
+    duration: "2022 - 2026",
+    marks: "3.8",
+    totalMarks: "4"
+  },
+  {
+    degree: "FSc",
+    school: "Aspire College Okara",
+    duration: "2019 - 2021",
+    marks: "976",
+    totalMarks: "1100"
+  },
+  {
+    degree: "Matric",
+    school: "Govt. MC High School Okara",
+    duration: "2017 - 2019",
+    marks: "1050",
+    totalMarks: "1100"
   },
 ];
 
@@ -108,54 +150,4 @@ export interface Project {
   sourceCode?: string;
 }
 
-// PLACEHOLDER entries — 4–8 real projects, list order = display order
-export const PROJECTS: Project[] = [
-  {
-    title: "TODO Project One",
-    slug: "demo-1",
-    year: 2025,
-    description: "TODO one paragraph on what the project is.<br/><ul><li>TODO key feature</li><li>TODO key feature</li></ul>",
-    role: "TODO what you owned: frontend, API, infra…",
-    techStack: ["Next.JS", "TypeScript", "PostgreSQL", "Docker"],
-    thumbnail: demo1Thumb,
-    images: [demo1Img1, demo1Img2],
-    liveUrl: "https://example.com",
-    sourceCode: "https://github.com/salmanghauri7",
-  },
-  {
-    title: "TODO Project Two",
-    slug: "demo-2",
-    year: 2024,
-    description: "TODO one paragraph on what the project is.<br/><ul><li>TODO key feature</li><li>TODO key feature</li></ul>",
-    role: "TODO what you owned: frontend, API, infra…",
-    techStack: ["React.JS", "Node.JS", "MongoDB"],
-    thumbnail: demo2Thumb,
-    images: [demo2Img1, demo2Img2],
-    liveUrl: "https://example.com",
-    sourceCode: "https://github.com/salmanghauri7",
-  },
-  {
-    title: "TODO Project Three",
-    slug: "demo-3",
-    year: 2023,
-    description: "TODO one paragraph on what the project is.<br/><ul><li>TODO key feature</li><li>TODO key feature</li></ul>",
-    role: "TODO what you owned: frontend, API, infra…",
-    techStack: ["FastAPI", "React.JS", "PostgreSQL", "AWS"],
-    thumbnail: demo3Thumb,
-    images: [demo3Img1, demo3Img2],
-    liveUrl: "https://example.com",
-    sourceCode: "https://github.com/salmanghauri7",
-  },
-  {
-    title: "TODO Project Four",
-    slug: "demo-4",
-    year: 2022,
-    description: "TODO one paragraph on what the project is.<br/><ul><li>TODO key feature</li><li>TODO key feature</li></ul>",
-    role: "TODO what you owned: frontend, API, infra…",
-    techStack: ["Astro", "TypeScript", "GSAP"],
-    thumbnail: demo4Thumb,
-    images: [demo4Img1, demo4Img2],
-    liveUrl: "https://example.com",
-    sourceCode: "https://github.com/salmanghauri7",
-  },
-];
+export const PROJECTS: Project[] = []; // 4–8 entries, list order = display order

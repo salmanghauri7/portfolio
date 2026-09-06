@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import { GENERAL_INFO, HERO } from '../../data/site';
 import Button from '../Button.astro';
 import ChevronArrow from '../ChevronArrow.astro';
@@ -17,17 +18,18 @@ const [introBefore, introAfter] = HERO.intro.split('{name}');
       <div class="cta slide-up-and-fade">
         <Button href={GENERAL_INFO.ctaUrl} target="_blank">{HERO.ctaLabel}</Button>
       </div>
+      <div class="stats">
+        {
+          HERO.stats.map((stat) => (
+            <div class="stat slide-up-and-fade">
+              <p class="stat-value">{stat.value}</p>
+              <p class="stat-label">{stat.label}</p>
+            </div>
+          ))
+        }
+      </div>
     </div>
-    <div class="stats">
-      {
-        HERO.stats.map((stat) => (
-          <div class="stat slide-up-and-fade">
-            <p class="stat-value">{stat.value}</p>
-            <p class="stat-label">{stat.label}</p>
-          </div>
-        ))
-      }
-    </div>
+    <Image class="photo slide-up-and-fade" src={HERO.photo} alt={`Portrait of ${GENERAL_INFO.name}`} width={600} densities={[1, 2]} loading="eager" />
   </div>
   <div class="hero-chevron"><ChevronArrow /></div>
 </section>
@@ -44,16 +46,14 @@ const [introBefore, introAfter] = HERO.intro.split('{name}');
     min-height: 530px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     padding-bottom: 40px;
   }
   .hero-main {
     max-width: 544px;
-    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: flex-start;
   }
   h1 {
@@ -78,25 +78,10 @@ const [introBefore, introAfter] = HERO.intro.split('{name}');
   .cta {
     margin-top: 36px;
   }
-  .availability {
-    margin-top: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    color: var(--muted-fg);
-  }
-  .availability-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #fff;
-    flex-shrink: 0;
-  }
   .stats {
+    margin-top: 48px;
     display: flex;
-    gap: 16px;
-    text-align: center;
+    gap: 24px;
   }
   .stat-value {
     font: 400 30px/1 var(--font-anton);
@@ -104,7 +89,11 @@ const [introBefore, introAfter] = HERO.intro.split('{name}');
     margin-bottom: 6px;
   }
   .stat-label {
+    font-size: 14px;
     color: var(--muted-fg);
+  }
+  .photo {
+    display: none;
   }
   .hero-chevron {
     position: absolute;
@@ -125,19 +114,40 @@ const [introBefore, introAfter] = HERO.intro.split('{name}');
   @media (min-width: 768px) {
     .hero-inner {
       flex-direction: row;
+      justify-content: space-between;
       padding-bottom: 0;
     }
     .hero-main {
-      flex-grow: 0;
       display: block;
     }
     .stats {
-      position: absolute;
-      bottom: 10%;
-      right: 4%;
-      flex-direction: column;
-      gap: 32px;
-      text-align: right;
+      gap: 0;
+    }
+    .stat {
+      padding-right: 28px;
+    }
+    .stat + .stat {
+      padding-left: 28px;
+      border-left: 1px solid var(--border);
+    }
+    .hero-chevron {
+      bottom: 40px; /* stats row made the text block taller; keeps the chevron clear of it on 768px-tall laptops */
+    }
+    /* photo dissolves into the page; the amber backdrop becomes a halo behind the head */
+    .photo {
+      display: block;
+      flex-shrink: 0;
+      width: min(600px, 42vw);
+      height: auto;
+      max-height: 85svh;
+      object-fit: cover;
+      -webkit-mask-image: radial-gradient(ellipse 60% 56% at 50% 42%, #000 26%, transparent 68%);
+      mask-image: radial-gradient(ellipse 60% 56% at 50% 42%, #000 26%, transparent 68%);
+    }
+  }
+  @media (min-width: 1280px) {
+    .photo {
+      margin-right: -60px; /* halo reaches toward the edge once the container has slack */
     }
   }
 </style>
