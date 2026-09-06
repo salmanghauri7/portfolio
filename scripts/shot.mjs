@@ -42,7 +42,7 @@ if (process.env.RELOAD) { await send('Page.reload'); await sleep(+process.env.RE
 if (+scrollY) { await send('Runtime.evaluate', { expression: `window.scrollTo(0, ${scrollY})` }); await sleep(1800); }
 if (js) {
   const r = await send('Runtime.evaluate', { expression: js, awaitPromise: true, returnByValue: true });
-  console.log('js:', JSON.stringify(r.result.exceptionDetails ? r.result.exceptionDetails.exception?.description : r.result.result.value));
+  console.log('js:', JSON.stringify(r.error ? 'CDP error: ' + r.error.message : r.result.exceptionDetails ? r.result.exceptionDetails.exception?.description : r.result.result.value));
 }
 const { result } = await send('Runtime.evaluate', { returnByValue: true, expression: `JSON.stringify({
   title: document.title, innerWidth, scrollY: Math.round(scrollY), scrollWidth: document.documentElement.scrollWidth,
