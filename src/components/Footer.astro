@@ -32,7 +32,8 @@ import { GENERAL_INFO } from '../data/site';
     display: inline-block;
     margin-top: 20px;
     margin-bottom: 40px;
-    font: 400 30px/40px var(--font-anton);
+    font: 400 clamp(20px, 8.75vw, 30px) / 40px var(--font-anton); /* 28px at 320: the address is one unbreakable word */
+    overflow-wrap: anywhere;
   }
   .email:hover {
     text-decoration: underline;
@@ -44,6 +45,9 @@ import { GENERAL_INFO } from '../data/site';
     gap: 6px;
     line-height: 1;
     color: var(--muted-fg);
+  }
+  .credit a {
+    padding-block: 8px; /* 16px text alone is too small a touch target */
   }
   .credit a:hover {
     text-decoration: underline;

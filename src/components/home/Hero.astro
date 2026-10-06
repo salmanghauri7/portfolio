@@ -42,12 +42,12 @@ const [introBefore, introAfter] = HERO.intro.split('{name}');
   .hero-inner {
     position: relative;
     z-index: 1; /* text above the chevron */
-    height: 100svh;
-    min-height: 530px;
+    min-height: max(100svh, 530px); /* min, not height: longer copy grows the hero instead of clipping under overflow:hidden */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding-top: 88px; /* clears the burger (20 + 48 + 20) on short phones */
     padding-bottom: 40px;
   }
   .hero-main {
@@ -96,6 +96,7 @@ const [introBefore, introAfter] = HERO.intro.split('{name}');
     display: none;
   }
   .hero-chevron {
+    display: none; /* on phones it lands behind the stats row and shrinks to half width */
     position: absolute;
     bottom: 80px;
     left: 50%;
@@ -131,6 +132,7 @@ const [introBefore, introAfter] = HERO.intro.split('{name}');
       border-left: 1px solid var(--border);
     }
     .hero-chevron {
+      display: block;
       bottom: 40px; /* stats row made the text block taller; keeps the chevron clear of it on 768px-tall laptops */
     }
     /* photo dissolves into the page; the amber backdrop becomes a halo behind the head */

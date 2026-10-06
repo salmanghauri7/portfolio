@@ -150,4 +150,46 @@ export interface Project {
   sourceCode?: string;
 }
 
-export const PROJECTS: Project[] = []; // 4–8 entries, list order = display order
+// TODO: swap `dp` for real thumbnails/screens once they land in src/assets/projects/{thumbnail,images}
+export const PROJECTS: Project[] = [
+  // 4–8 entries, list order = display order
+  {
+    title: "Glaido",
+    slug: "glaido",
+    year: 2025,
+    description:
+      "AI-powered voice transcription desktop app for macOS. Speak, and it types for you, with agentic productivity workflows triggered by voice commands.<br/><br/><ul><li>Real-time audio streaming over WebSockets with SpeexDSP resampling, VAD and denoising, so transcription stays accurate in noisy rooms.</li><li>OpenAI Whisper (deployed on Baseten) for fast, accurate speech-to-text.</li><li>Persistent recording, custom dictionary and text snippets.</li><li>Companion web app for account and extended functionality.</li></ul>",
+    role:
+      "Built the Electron.js desktop app end to end, engineered the audio pipeline, and designed the Node.js / Express.js backend with Supabase for auth and data.",
+    techStack: ["Electron.js", "Node.js", "Supabase", "Express.js", "WebSockets", "OpenAI Whisper", "SpeexDSP"],
+    thumbnail: dp,
+    images: [],
+    liveUrl: "https://glaido.com/",
+  },
+  {
+    title: "ResearchZone",
+    slug: "researchzone",
+    year: 2026,
+    description:
+      "Collaborative research platform (final year project). Workspaces with real-time chat, shared paper bookmarking and in-app paper discovery via the arXiv API.<br/><br/><ul><li>RAG microservice in FastAPI handling embeddings, vector search and LLM calls, with summarisation and indexing offloaded to ARQ workers to cut retrieval latency.</li><li>AI-powered 'chat with paper' for contextual querying over research documents.</li><li>Backend on AWS EC2 via Docker with Parameter Store for config, private S3 assets served through CloudFront, AI service on Hugging Face Spaces.</li></ul>",
+    role:
+      "Full-stack: Next.js frontend, Node.js API with Socket.IO and MongoDB, FastAPI RAG service, and the AWS deployment.",
+    techStack: ["Next.js", "Node.js", "FastAPI", "Socket.IO", "MongoDB", "ARQ", "AWS", "Docker", "Hugging Face Spaces"],
+    thumbnail: dp,
+    images: [],
+    liveUrl: "https://research-zone-frontend.vercel.app",
+  },
+  {
+    title: "FairGig",
+    slug: "fairgig",
+    year: 2025, // TODO confirm hackathon year
+    description:
+      "Gig worker income and rights platform, built in a 24-hour hackathon. Tracks earnings across multiple gig platforms with role-based dashboards for workers, verifiers and analysts.<br/><br/><ul><li>Statistical anomaly detection service (FastAPI) that flags unusual deductions, sudden income drops and commission discrepancies.</li><li>Secure screenshot verification flow and a print-friendly certificate engine that renders verified income reports for banks and landlords.</li><li>Async grievance-tracking microservice in Node.js that logs, tags and clusters complaints, with anonymised city-wide medians to protect worker privacy.</li></ul>",
+    role:
+      "Architected the anomaly detection service, the verification and certificate flows, and the grievance microservice.",
+    techStack: ["React", "Node.js", "FastAPI"],
+    thumbnail: dp,
+    images: [],
+    sourceCode: "https://github.com/MZeeCoder/fairgig",
+  },
+];

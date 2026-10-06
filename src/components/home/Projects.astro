@@ -115,6 +115,7 @@ import SectionTitle from '../SectionTitle.astro';
     display: flex;
     gap: 16px;
     font: 400 36px/1 var(--font-anton);
+    overflow-wrap: anywhere; /* a single word over ~12 chars would overflow at 60px */
     /* amber wipe: right half (fg) shows at rest, left half (amber) sweeps in on hover */
     background-image: linear-gradient(to right, var(--primary) 0 50%, var(--fg) 50% 100%);
     background-size: 200% 100%;

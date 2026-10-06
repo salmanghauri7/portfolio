@@ -138,6 +138,7 @@ const images = await Promise.all(project.images.map((img) => getImage({ src: img
   h1 {
     font: 400 36px/1 var(--font-anton);
     overflow: hidden;
+    overflow-wrap: anywhere; /* overflow:hidden would otherwise clip a long single-word title silently */
   }
   h1 span {
     display: inline-block;
@@ -219,6 +220,11 @@ const images = await Promise.all(project.images.map((img) => getImage({ src: img
   .open:hover {
     background: var(--primary);
     color: var(--primary-fg);
+  }
+  @media (hover: none) {
+    .open {
+      opacity: 1; /* no hover on touch, so the button would be invisible */
+    }
   }
 
   @media (min-width: 768px) {
